@@ -13,9 +13,18 @@ app.get('/home', (req, res) => {
 
 app.get('/auth', (req, res) => {
     let data;
-    axios.get('https://auth.tesla.com/oauth2/v3/authorize').then((response) => {
-        console.log(response);
+    let options = {
+        "client_id": "ownerapi", // Always ownerapi
+        "code_challenge": "123", // Any Random String
+        "code_challenge_method": "S256", // Always S256
+        "redirect_uri": "https://auth.tesla.com/void/callback", // Always that
+        "response_type": "code", // Always code
+        "scope": "openid email offline_access", // Always "openid email offline_access"
+        "state": "123" // Any Random String
+    }
+    axios.get('https://auth.tesla.com/oauth2/v3/authorize', { params: options }).then((response) => {
+        console.log(response.data);
         data = response.data
     })
-    res.send(res)
+    res.send(data)
 })
