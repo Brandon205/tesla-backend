@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config(); // Can use as process.env._NAME
 const axios = require('axios');
 const express = require('express');
 
@@ -7,26 +8,14 @@ const PORT = "8080";
 const htmlparser2 = require('htmlparser2');
 
 app.listen(PORT, () => {
-    console.log(`Connected to backend on Port: ${PORT}`);
+    console.log(`Ready and connected to the backend on Port: ${PORT}`);
 });
 
 app.get('/home', (req, res) => {
-    const testHTML = 
-    `<form method="post" id="form">
-        <input type="hidden" name="_csrf" value="JSZgcKOu-WhCO5Ox5flqrsJk6zsR_o3Hvwm0" />
-        <input type="hidden" name="_phase" value="identity" />
-        <input type="hidden" name="transaction_id" value="p5rpfsDx" />
-        <input type="hidden" name="cancel" value="" id="form-input-cancel" />
-    </form>`
-    let parser = new DOMParser()
-    let parsed = parser.parseFromString(testHTML)
-    console.log(parsed)
-
     res.json({'message': 'Hello!'});
 })
 
 app.get('/auth', (req, res) => {
-    let data;
     let options = {
         "client_id": "ownerapi", // Always ownerapi
         "code_challenge": "123", // Any Random String
@@ -39,29 +28,37 @@ app.get('/auth', (req, res) => {
 
     axios.get('https://auth.tesla.com/oauth2/v3/authorize', { params: options }).then((response) => {
         // COOKIE INFO: response.headers['set-cookie']
-        // data = response.data;
-        // res.status(200).send(data);
-        let codes = {}
+        let codes = {};
         const parser = new htmlparser2.Parser({
             onopentag(name, attributes) {
             if (name === 'input' && attributes.name === '_csrf') {
-                codes._csrf = attributes.value
-                // console.log(attributes.value)
+                codes._csrf = attributes.value;
             } else if (name === 'input' && attributes.name === '_phase') {
-                codes._phase = attributes.value
-                // console.log(attributes.value)
+                codes._phase = attributes.value;
             } else if (name === 'input' && attributes.name === 'transaction_id') {
-                codes.transaction_id = attributes.value
-                // console.log(attributes.value)
+                codes.transaction_id = attributes.value;
             } else if (name === 'input' && attributes.name === 'cancel') {
-                codes.cancel = attributes.value
-                // console.log(attributes.value)
+                codes.cancel = attributes.value;
             }
             }
         })
 
-        parser.write(response.data)
-        parser.end()
-        res.status(200).send(codes)
+        parser.write(response.data);
+        parser.end();
+        codes.identity = process.env.EMAIL;
+        codes.credential = process.env.PASSWORD;
+        
+        console.log(codes)
+        console.log(response.headers['set-cookie'])
+        res.status(200).send("all good")
+
+        // axios.post('https://auth.tesla.com/oauth2/v3/authorize', { headers: {'Content-Type': 'application/x-www-form-urlencoded', Cookie: response.headers['set-cookie']}, params: options, data: codes}).then((res) => {
+        //     console.log(res);
+        //     res.status(302).send(res.data);
+        // }).catch((error) => { // POST request error
+        //     console.log('ERROR ON POST: ', error)
+        // })
+    }).catch((error) => { // GET request error
+        console.log('ERROR ON GET: ', error)
     })
 })
