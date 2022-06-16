@@ -1,13 +1,14 @@
 const dotenv = require('dotenv').config();
 const axios = require('axios');
 const express = require('express');
+
 const app = express();
 const PORT = "8080";
 
 // const baseURI = 'https://owner-api.teslamotors.com'
 
 app.listen(PORT, () => {
-    console.log(`Connected to backend on Port: ${PORT}`);
+    console.log(`Ready and connected to the backend on Port: ${PORT}`);
 });
 
 app.get('/home', (req, res) => {
