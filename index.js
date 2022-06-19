@@ -5,6 +5,8 @@ const express = require('express');
 const app = express();
 const PORT = "8080";
 
+app.use(express.json())
+
 app.listen(PORT, () => {
     console.log(`Ready and connected to the backend on Port: ${PORT}`);
 });
@@ -42,7 +44,9 @@ app.get('/vehicles', (req, res) => {
 app.get('/vehicle/:id', (req, res) => {
     const baseURI = 'https://owner-api.teslamotors.com'
 
-    axios.get(baseURI + `/api/1/vehicles/${req.params.id}`, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
+    console.log(baseURI + '/api/1/vehicles/' + req.params.id)
+
+    axios.get(baseURI + '/api/1/vehicles/' + req.params.id, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
         console.log(response);
         res.send(response.data);
     }).catch((error) => {
@@ -51,8 +55,9 @@ app.get('/vehicle/:id', (req, res) => {
 })
 
 app.get('/vehiclecharge/:id', (req, res) => {
+    const baseURI = 'https://owner-api.teslamotors.com'
 
-    axios.get(baseURI + `/api/1/vehicles/${req.params.id}/vehicle_data`, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
+    axios.get(baseURI + `/api/1/vehicles/${req.params.id}/data_request/charge_state`, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
         res.status(200).send(response.data);
     }).catch((error) => {
         console.log(error)
