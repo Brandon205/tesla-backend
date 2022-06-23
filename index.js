@@ -12,6 +12,7 @@ app.listen(PORT, () => {
 });
 
 app.get('/home', (req, res) => {
+    res.set("Access-Control-Allow-Origin", "http://localhost:19006/");
     res.json({'message': 'Hello!'});
 })
 
@@ -44,10 +45,13 @@ app.get('/vehicles', (req, res) => {
 app.get('/vehicle/:id', (req, res) => {
     const baseURI = 'https://owner-api.teslamotors.com'
 
-    console.log(baseURI + '/api/1/vehicles/' + req.params.id)
+    res.set("Access-Control-Allow-Origin", "*");
+
+    // console.log(baseURI + '/api/1/vehicles/' + req.params.id)
 
     axios.get(baseURI + '/api/1/vehicles/' + req.params.id, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
-        console.log(response);
+        console.log(response.data);
+        res.set("Access-Control-Allow-Origin", "*");
         res.send(response.data);
     }).catch((error) => {
         console.log('ERROR!: ', error)
