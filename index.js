@@ -58,7 +58,7 @@ app.get('/vehiclecharge/:id', (req, res) => {
     const baseURI = 'https://owner-api.teslamotors.com';
 
     axios.get(baseURI + `/api/1/vehicles/${req.params.id}/data_request/charge_state`, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
-        res.set("Access-Control-Allow-Origin", "http://localhost:19006/");
+        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
     }).catch((error) => {
         console.log(error)
