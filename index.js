@@ -40,6 +40,8 @@ app.get('/vehicles', (req, res) => {
     axios.get(baseURI + '/api/1/vehicles', { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then((response) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
+    }).catch(error => {
+        console.log("ERROR /vehicles ", error)
     })
 })
 
@@ -50,7 +52,7 @@ app.get('/vehicle/:id', (req, res) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
     }).catch((error) => {
-        console.log('ERROR!: ', error)
+        console.log('ERROR /vehicle/:id ', error)
     })
 })
 
@@ -61,6 +63,6 @@ app.get('/vehiclecharge/:id', (req, res) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
     }).catch((error) => {
-        console.log(error)
+        console.log("ERROR /vehicle/:id ", error)
     })
 })
