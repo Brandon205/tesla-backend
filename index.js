@@ -5,7 +5,7 @@ const express = require('express');
 const app = express();
 const PORT = "8080";
 
-app.use(express.json())
+app.use(express.json());
 
 app.listen(PORT, () => {
     console.log(`Ready and connected to the backend on Port: ${PORT}`);
@@ -41,7 +41,7 @@ app.get('/vehicles', (req, res) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
     }).catch(error => {
-        console.log("ERROR /vehicles ", error)
+        console.log("ERROR /vehicles ", error);
     })
 })
 
@@ -52,7 +52,7 @@ app.get('/vehicle/:id', (req, res) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
     }).catch((error) => {
-        console.log('ERROR /vehicle/:id ', error)
+        console.log('ERROR /vehicle/:id ', error);
     })
 })
 
@@ -63,6 +63,17 @@ app.get('/vehiclecharge/:id', (req, res) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(response.data);
     }).catch((error) => {
-        console.log("ERROR /vehicle/:id ", error)
+        console.log("ERROR /vehicle/:id ", error);
+    })
+})
+
+app.get('/wakeup/:id', (req, res) => {
+    const baseURI = 'https://owner-api.teslamotors.com';
+
+    axios.post(baseURI + `/api/1/vehicles/${req.params.id}/wake_up`, {}, { headers: {'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN} }).then(response => {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(response.data);
+    }).catch(error => {
+        console.log("ERROR /wakeup/:id ", error);
     })
 })
